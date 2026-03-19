@@ -17,7 +17,7 @@ public class ObjectSpawner : MonoBehaviour
     {
         while(true)
         {
-            Instantiate(fallingObjPf, GetSpawnPos(), Quaternion.identity);
+            Instantiate(fallingObjPf, GetSpawnPos(), Quaternion.Euler(new Vector3(0.0f, 0.0f, 180.0f)));
             yield return new WaitForSeconds(Random.Range(spawnTimeRange.x, spawnTimeRange.y));
         }
     }
