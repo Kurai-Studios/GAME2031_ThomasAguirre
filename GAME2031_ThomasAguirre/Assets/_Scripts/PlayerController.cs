@@ -1,4 +1,5 @@
 using Unity.VisualScripting;
+using TMPro;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -10,6 +11,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float moveForce;
     [SerializeField] private float maxSpeed;
 
+    [Header("Score")]
+    [SerializeField] TextMeshProUGUI scoreText;
+    private int score;
+
     private float input;
 
     private void Awake()
@@ -18,13 +23,22 @@ public class PlayerController : MonoBehaviour
         playerSprite = GetComponent<SpriteRenderer>();
     }
 
+    private void Start()
+    {
+        SetScore(0);
+    }
+
     void Update()
     {
         input = Input.GetAxisRaw("Horizontal");
 
-        if (input != 0)
+        if (input < 0)
         {
-            playerSprite.flipX = input < 0;
+            transform.rotation = Quaternion.Euler(new Vector3(0.0f, 180.0f, 0.0f));
+        }
+        else if (input > 0)
+        {
+            transform.rotation = Quaternion.Euler(new Vector3(0.0f, 0.0f, 0f));
         }
     }
 
@@ -42,4 +56,16 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
+    public void IncrementScore(int incrementor)
+    {
+        SetScore(score + incrementor);
+    }
+    public void SetScore(int score)
+    {
+        this.score = score;
+        scoreText.text = $"Score: {score}";
+    }
+
+    public int GetScore() => score;
 }
