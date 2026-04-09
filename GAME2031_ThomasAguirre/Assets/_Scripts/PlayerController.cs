@@ -1,6 +1,8 @@
 using Unity.VisualScripting;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using System;
 
 public class PlayerController : MonoBehaviour
 {
@@ -15,12 +17,36 @@ public class PlayerController : MonoBehaviour
     [SerializeField] TextMeshProUGUI scoreText;
     private int score;
 
+    private LE9Input inputActions;
+
     private float input;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        inputActions = new LE9Input();
         playerSprite = GetComponent<SpriteRenderer>();
+    }
+
+    private void OnEnable()
+    {
+        inputActions.Player.Enable();
+
+        inputActions.Player.Move.performed += OnMove;
+        inputActions.Player.Move.canceled += OnMove;
+    }
+
+    private void OnMove(InputAction.CallbackContext context)
+    {
+        input = context.ReadValue<float>();
+    }
+
+    private void OnDisable()
+    {
+        inputActions.Player.Move.performed -= OnMove;
+        inputActions.Player.Move.canceled -= OnMove;
+
+        inputActions.Player.Disable();
     }
 
     private void Start()
@@ -30,7 +56,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        input = Input.GetAxisRaw("Horizontal");
+        //input = Input.GetAxisRaw("Horizontal");
 
         if (input < 0)
         {
