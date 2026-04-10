@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ObjectSpawner : MonoBehaviour
 {
-    [SerializeField] private GameObject fallingObjPf;
+    [SerializeField] private GameObject[] fallingObjPf;
     [SerializeField] private Vector2 xSpawnRange;
     [SerializeField] private float ySpawn;
     [SerializeField] private Vector2 spawnTimeRange;
@@ -17,7 +17,8 @@ public class ObjectSpawner : MonoBehaviour
     {
         while(true)
         {
-            Instantiate(fallingObjPf, GetSpawnPos(), Quaternion.Euler(new Vector3(0.0f, 0.0f, 180.0f)));
+            GameObject randomPrefab = fallingObjPf[Random.Range(0, fallingObjPf.Length)];
+            Instantiate(randomPrefab, GetSpawnPos(), Quaternion.Euler(new Vector3(0.0f, 0.0f, 180.0f)));
             yield return new WaitForSeconds(Random.Range(spawnTimeRange.x, spawnTimeRange.y));
         }
     }

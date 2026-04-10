@@ -6,7 +6,10 @@ public class FallingObject : MonoBehaviour
     {
         if (collision.gameObject.TryGetComponent<PlayerController>(out PlayerController playerController))
         {
-            playerController.IncrementScore(1);
+            if (CompareTag("Points"))
+                playerController.IncrementScore(1);
+            else if (CompareTag("Danger"))
+                playerController.TakeDamage(1);
         }
 
         Destroy(gameObject);

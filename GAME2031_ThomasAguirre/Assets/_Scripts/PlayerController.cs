@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
+using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
@@ -16,6 +17,13 @@ public class PlayerController : MonoBehaviour
     [Header("Score")]
     [SerializeField] TextMeshProUGUI scoreText;
     private int score;
+
+    [Header("Health")]
+    [SerializeField] private int maxLives = 3;
+    [SerializeField] private TextMeshProUGUI livesText;
+    [SerializeField] private float invulnerabilityDuration = 1f;
+    private int currentLives;
+    private bool isInvulnerable = false;
 
     private LE9Input inputActions;
 
@@ -52,12 +60,12 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         SetScore(0);
+        currentLives = maxLives;
+        UpdateDisplay();
     }
 
     void Update()
     {
-        //input = Input.GetAxisRaw("Horizontal");
-
         if (input < 0)
         {
             transform.rotation = Quaternion.Euler(new Vector3(0.0f, 180.0f, 0.0f));
@@ -94,4 +102,62 @@ public class PlayerController : MonoBehaviour
     }
 
     public int GetScore() => score;
+
+    public void TakeDamage(int damage)
+    {
+        if (isInvulnerable) return;
+
+        currentLives -= damage;
+        UpdateDisplay();
+
+        if (currentLives <= 0)
+        {
+            Die();
+        }
+        else
+        {
+            StartCoroutine(InvulnerabilityFrames());
+        }
+    }
+
+    private void UpdateDisplay()
+    {
+        if (livesText != null)
+        {
+            livesText.text = $"Lives: {currentLives}";
+        }
+        else
+        {
+            Debug.Log($"Lives: {currentLives}");
+        }
+    }
+
+    private IEnumerator InvulnerabilityFrames()
+    {
+        isInvulnerable = true;
+
+        float blink = 0;
+
+        while (blink < invulnerabilityDuration)
+        {
+            if (playerSprite != null)
+                playerSprite.enabled = !playerSprite.enabled;
+
+            yield return null;
+            blink += Time.deltaTime;
+        }
+
+        if (playerSprite != null)
+            playerSprite.enabled = true;
+
+        isInvulnerable = false;
+    }
+
+    private void Die()
+    {
+        //Debug.Log("You couldn't escape the seal and will remain trapped");
+        this.enabled = false;
+    }
+
+    public int GetCurrentLives() => currentLives;
 }
