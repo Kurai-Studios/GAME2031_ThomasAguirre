@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -52,6 +53,7 @@ public class GameManager : MonoBehaviour
     {
         isGameActive = false;
         Debug.Log("Game Over! You escaped from the seal holding you for centuries");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 2);
 
         if (player != null)
             player.enabled = false;
@@ -72,6 +74,7 @@ public class GameManager : MonoBehaviour
     {
         isGameActive = false;
         Debug.Log("You couldn't escape the seal and will remain trapped");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
 
         StopCoroutine(UpdateTimer());
 
